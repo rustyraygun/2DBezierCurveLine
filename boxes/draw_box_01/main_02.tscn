@@ -1,0 +1,87 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://boxes/main_box_02.gd" type="Script" id=1]
+[ext_resource path="res://icon.png" type="Texture" id=2]
+[ext_resource path="res://components/line_creator/line_creator.gd" type="Script" id=4]
+[ext_resource path="res://components/auto_line_creator_02.gd" type="Script" id=5]
+[ext_resource path="res://components/LINES_controller.gd" type="Script" id=6]
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 0 ), 0.0, 0.0, 0, 0, Vector2( 1, 1 ), 1.4, 0.0, 0, 0 ]
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0 ), 0.0, 1.4, 0, 0, Vector2( 1, 1 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=3]
+curve = SubResource( 2 )
+
+[sub_resource type="ParticlesMaterial" id=4]
+trail_divisor = 3
+trail_size_modifier = SubResource( 3 )
+emission_shape = 1
+emission_sphere_radius = 1.0
+flag_disable_z = true
+gravity = Vector3( 0, -25, 0 )
+initial_velocity = 3.3
+orbit_velocity = -0.3
+orbit_velocity_random = 0.0
+scale = 12.3
+
+[sub_resource type="Gradient" id=5]
+offsets = PoolRealArray( 0.044586, 0.993631 )
+colors = PoolColorArray( 0, 0, 0, 1, 0.294373, 0, 0.355469, 1 )
+
+[sub_resource type="GradientTexture" id=6]
+gradient = SubResource( 5 )
+
+[node name="main" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="line" type="Line2D" parent="."]
+position = Vector2( 51.5906, 70.6393 )
+points = PoolVector2Array( 9.89185, -43.1953, 281.337, -13.8285, 580.563, 13.1574, 930.584, 371.116 )
+
+[node name="draw_line" type="Line2D" parent="."]
+position = Vector2( 158.74, 342.879 )
+points = PoolVector2Array( 67.8321, -5.89145 )
+width_curve = SubResource( 1 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 60.3213, 25.3984 )
+texture = ExtResource( 2 )
+
+[node name="Particles2D" type="Particles2D" parent="Sprite"]
+emitting = false
+lifetime = 3.3
+explosiveness = 0.42
+process_material = SubResource( 4 )
+
+[node name="line_creator" type="Node2D" parent="."]
+script = ExtResource( 4 )
+
+[node name="LINES" type="Node2D" parent="."]
+script = ExtResource( 6 )
+
+[node name="temp_line" type="Line2D" parent="LINES" groups=[
+"temp_line",
+]]
+
+[node name="auto_line_creator" type="Node2D" parent="."]
+script = ExtResource( 5 )
+
+[node name="timer_0" type="Timer" parent="auto_line_creator"]
+wait_time = 0.3
+autostart = true
+
+[node name="TextureRect" type="TextureRect" parent="."]
+show_behind_parent = true
+margin_right = 40.0
+margin_bottom = 40.0
+rect_scale = Vector2( 26.1539, 15.3477 )
+texture = SubResource( 6 )
+expand = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="timeout" from="auto_line_creator/timer_0" to="auto_line_creator" method="_on_timer_0_timeout"]
